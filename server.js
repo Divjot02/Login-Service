@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 var session = require("express-session");
-const { Script } = require("vm");
 app.use(
   session({
     secret: "WEDONTTELLTHATHERE",
