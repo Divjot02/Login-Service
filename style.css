@@ -33,9 +33,6 @@ div {
 
 a {
     text-decoration: none;
-    font-size:18px;
-    font-weight: bold;
-    color:#333
 }
 label {
     display: block;
@@ -49,7 +46,4 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
-}
-div.msg{
-    color:red;
 }
