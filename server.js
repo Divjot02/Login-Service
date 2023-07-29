@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 var session = require("express-session");
+app.set("view engine", "ejs");
 app.use(
   session({
     secret: "WEDONTTELLTHATHERE",
@@ -20,10 +21,11 @@ app.get("/", (req, res) => {
 });
 app.get("/dashboard", function (req, res) {
   if (!req.session.isLoggedIn) {
-    res.redirect("/login");
+    res.redirect("/");
     return;
   }
-  res.sendFile(__dirname + "/dashboard.html");
+  // res.sendFile(__dirname + "/dashboard.html");
+  res.render("dashboard", { username: req.session.username });
 });
 
 app.get("/getuser", function (req, res) {
@@ -44,6 +46,7 @@ app.post("/login", function (req, res) {
       req.session.username = user.username;
       //redirect to dashboard
       res.redirect("/dashboard");
+
       return;
     }
     res.redirect("/invalid");
@@ -53,8 +56,12 @@ app.get("/invalid", function (req, res) {
   res.sendFile(__dirname + "/invalid.html");
 });
 
-app.get("/register", function (req, res) {
-  res.sendFile(__dirname + "/register.html");
+app.get("/register", (req, res) => {
+  if (req.session.isLoggedIn === true) {
+    res.redirect("/");
+  } else {
+    res.render("register.ejs", { message: "" });
+  }
 });
 
 //new account
@@ -76,9 +83,13 @@ app.post("/create_account", function (req, res) {
       }
       for (let user of data) {
         if (user.email === req.body.email.toLowerCase()) {
-          res.send(
-            `<h2> User Already Exist</h2><div><div><a href="/" style="text-decoration:none">Click Here to Login</a></div></div>`
-          );
+          // res.send(
+          //   `<h2> User Already Exist</h2><div><div><a href="/" style="text-decoration:none">Click Here to Login</a></div></div>`
+          // );
+          let message = "User Already Exists! Try Login";
+          res.render("register", {
+            message,
+          });
           return;
         }
       }
@@ -94,7 +105,10 @@ app.post("/create_account", function (req, res) {
     });
   } else {
     //("All fields are required");
-    res.redirect("/register");
+    let message = "All fields are required";
+    res.render("register", {
+      message,
+    });
   }
 });
 app.get("/logout", function (req, res) {
