@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 });
 app.get("/dashboard", function (req, res) {
   if (!req.session.isLoggedIn) {
-    res.redirect("/login");
+    res.redirect("/");
     return;
   }
   res.sendFile(__dirname + "/dashboard.html");
